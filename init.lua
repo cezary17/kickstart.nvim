@@ -451,7 +451,7 @@ require('lazy').setup({
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      end, { desc = '[-] Fuzzily search in current buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -754,6 +754,11 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+
+	-- Accept ([y]es) the completion.
+	--  This will auto-import if your LSP supports it.
+	--  This will expand snippets if the LSP sent a snippet.
+	['<Tab>'] = cmp.mapping.confirm { select = true },
       },
 
       appearance = {
@@ -792,20 +797,18 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'ficcdaf/ashen.nvim',
+    'comfysage/evergarden',
     priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-
+    opts = {
+      transparent_background = true,
+      variant = 'medium', -- 'hard'|'medium'|'soft'
+      overrides = {}, -- add custom overrides
+    },
+    init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'ashen'
+      vim.cmd.colorscheme 'evergarden'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -862,34 +865,6 @@ require('lazy').setup({
       })
     end,
   },
-  {
-    'ThePrimeagen/harpoon',
-    branch = 'harpoon2',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    init = function()
-      local harpoon = require 'harpoon'
-
-      vim.keymap.set('n', '<leader>a', function()
-        harpoon:list():add()
-      end)
-      vim.keymap.set('n', '<C-e>', function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end)
-
-      vim.keymap.set('n', '<leader>1', function()
-        harpoon:list():select(1)
-      end)
-      vim.keymap.set('n', '<leader>2', function()
-        harpoon:list():select(2)
-      end)
-      vim.keymap.set('n', '<leader>3', function()
-        harpoon:list():select(3)
-      end)
-      vim.keymap.set('n', '<leader>4', function()
-        harpoon:list():select(4)
-      end)
-    end,
-  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -904,14 +879,14 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
