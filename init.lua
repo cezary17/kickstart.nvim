@@ -593,10 +593,11 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        clangd = {},
+        gopls = {},
+        pyright = {},
+        rust_analyzer = {},
+        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
