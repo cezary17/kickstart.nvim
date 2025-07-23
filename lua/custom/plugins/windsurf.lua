@@ -1,4 +1,5 @@
 return {
+  --[[
   'Exafunction/windsurf.nvim',
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -51,4 +52,5 @@ return {
       require('codeium.virtual_text').cycle_or_complete()
     end, { desc = 'Manually trigger Codeium completion' })
   end,
+--]]
 }
