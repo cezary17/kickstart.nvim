@@ -144,5 +144,45 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    -- Add Go debug configuration for main package
+    dap.configurations.go = {
+      {
+        type = 'go',
+        name = 'Debug main package',
+        request = 'launch',
+        program = '${workspaceFolder}',
+        buildFlags = {},
+      },
+      {
+        type = 'go',
+        name = 'Debug main package with arguments',
+        request = 'launch',
+        program = '${workspaceFolder}',
+        args = function()
+          local args_string = vim.fn.input 'Program arguments: '
+          return vim.split(args_string, ' ')
+        end,
+        buildFlags = {},
+      },
+      {
+        type = 'go',
+        name = 'Debug current file',
+        request = 'launch',
+        program = '${file}',
+        buildFlags = {},
+      },
+      {
+        type = 'go',
+        name = 'Debug current file with arguments',
+        request = 'launch',
+        program = '${file}',
+        args = function()
+          local args_string = vim.fn.input 'Program arguments: '
+          return vim.split(args_string, ' ')
+        end,
+        buildFlags = {},
+      },
+    }
   end,
 }
