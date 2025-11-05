@@ -600,8 +600,10 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         -- gopls = {},
-        pyright = {},
+        -- pyright = {},
+        pyrefly = {},
         rust_analyzer = {},
+
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -762,11 +764,10 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-
-	-- Accept ([y]es) the completion.
-	--  This will auto-import if your LSP supports it.
-	--  This will expand snippets if the LSP sent a snippet.
-	['<Tab>'] = cmp.mapping.confirm { select = true },
+        -- Accept ([y]es) the completion.
+        --  This will auto-import if your LSP supports it.
+        --  This will expand snippets if the LSP sent a snippet.
+        ['<Tab>'] = { 'accept', 'fallback' },
       },
 
       appearance = {
