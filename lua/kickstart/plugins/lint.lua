@@ -7,6 +7,22 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        -- Ruff for style/complexity only - pyrefly handles type checking
+        python = { 'ruff' },
+      }
+
+      -- Configure ruff to only check style/complexity, not code analysis
+      -- Pyrefly (LSP) handles all type checking and code analysis
+      lint.linters.ruff.args = {
+        'check',
+        '--select=E,W,C,N', -- Only: pycodestyle errors/warnings, complexity, naming
+        '--ignore=F,B,A,S', -- Ignore: pyflakes, bugbear, annotations, security (LSP handles these)
+        '--output-format=json',
+        '--stdin-filename',
+        function()
+          return vim.api.nvim_buf_get_name(0)
+        end,
+        '-',
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
