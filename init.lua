@@ -121,6 +121,9 @@ end)
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Display tabs as 4 spaces wide
+vim.o.tabstop = 4
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -190,6 +193,9 @@ vim.diagnostic.config {
 }
 
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Reload file without saving
+vim.keymap.set('n', '<leader>r', '<cmd>e!<CR>', { desc = '[R]eload file without saving' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -625,6 +631,7 @@ require('lazy').setup({
         'lua_ls', -- Lua Language server
         'stylua', -- Used to format Lua code
         'ruff', -- Used for Python linting and formatting
+        'biome', -- Used for JSON/JS/TS formatting
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -684,6 +691,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         -- Use ruff for Python formatting (handles imports and code formatting)
         python = { 'ruff_format', 'ruff_organize_imports' },
+        json = { 'biome' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -860,10 +868,20 @@ require('lazy').setup({
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- - gsaiw) - [G]o [S]urround [A]dd [I]nner [W]ord [)]Paren
+      -- - gsd'   - [G]o [S]urround [D]elete [']quotes
+      -- - gsr)'  - [G]o [S]urround [R]eplace [)] [']
+      require('mini.surround').setup({
+        mappings = {
+          add = 'gsa',            -- Add surrounding in Normal and Visual modes
+          delete = 'gsd',         -- Delete surrounding
+          find = 'gsf',           -- Find surrounding (to the right)
+          find_left = 'gsF',      -- Find surrounding (to the left)
+          highlight = 'gsh',      -- Highlight surrounding
+          replace = 'gsr',        -- Replace surrounding
+          update_n_lines = 'gsn', -- Update `n_lines`
+        },
+      })
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
