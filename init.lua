@@ -628,13 +628,17 @@ require('lazy').setup({
       --    :Mason
       --
       -- You can press `g?` for help in this menu.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'lua_ls', -- Lua Language server
+      --
+      -- NOTE: Mason package names differ from LSP config names
+      -- Use Mason package names here (e.g., 'lua-language-server' not 'lua_ls')
+      local ensure_installed = {
+        'lua-language-server', -- Lua LSP (config name: lua_ls)
         'stylua', -- Used to format Lua code
         'ruff', -- Used for Python linting and formatting
         'biome', -- Used for JSON/JS/TS formatting
-      })
+        'clangd', -- C/C++ LSP
+        'rust-analyzer', -- Rust LSP (config name: rust_analyzer)
+      }
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -905,12 +909,17 @@ require('lazy').setup({
 
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
-      require('nvim-treesitter').install(filetypes)
+      -- Add nvim-treesitter's runtime directory to runtimepath for queries
+      local ts_path = vim.fn.stdpath('data') .. '/lazy/nvim-treesitter'
+      vim.opt.runtimepath:append(ts_path .. '/runtime')
+
+      -- Enable treesitter highlighting for all filetypes
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = filetypes,
-        callback = function() vim.treesitter.start() end,
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
       })
     end,
   },

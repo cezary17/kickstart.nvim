@@ -29,5 +29,8 @@ return {
     vim.keymap.set('n', '<leader>4', function()
       harpoon:list():select(4)
     end, { desc = 'Select [4]th harpooned' })
+    vim.keymap.set('n', '<leader>5', function()
+      harpoon:list():select(5)
+    end, { desc = 'Select [5]th harpooned' })
   end,
 }
