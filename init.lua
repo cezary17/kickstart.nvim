@@ -606,11 +606,49 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
-        clangd = {},
+        clangd = {
+          cmd = { 'clangd' },
+          filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
+          root_markers = { '.clangd', 'compile_commands.json', 'compile_flags.txt', '.git' },
+        },
+        julials = {
+          filetypes = { 'julia' },
+          settings = {
+            julia = {
+              lint = {
+                -- StaticLint only auto-allows the package itself under test/.
+                disabledDirs = { 'test', 'docs', 'examples' },
+              },
+            },
+          },
+          root_dir = function(bufnr, on_dir)
+            local path = vim.api.nvim_buf_get_name(bufnr)
+            local root = vim.fs.root(bufnr, { 'Project.toml', 'JuliaProject.toml' }) or vim.fs.root(bufnr, '.git')
+            on_dir(root or vim.fs.dirname(path) or vim.uv.cwd())
+          end,
+          cmd = function(dispatchers, config)
+            local root = config.root_dir or vim.uv.cwd()
+            local julia_lsp = vim.fn.exepath 'julia-lsp'
+            if julia_lsp == '' then julia_lsp = vim.fn.stdpath 'data' .. '/mason/bin/julia-lsp' end
+
+            return vim.lsp.rpc.start({ julia_lsp, root }, dispatchers, {
+              cwd = root,
+              env = { JULIA_PROJECT = root },
+            })
+          end,
+        },
         -- gopls = {},
         -- pyright = {},
-        pyrefly = {},
-        rust_analyzer = {},
+        pyrefly = {
+          cmd = { 'pyrefly', 'lsp' },
+          filetypes = { 'python' },
+          root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+        },
+        rust_analyzer = {
+          cmd = { 'rust-analyzer' },
+          filetypes = { 'rust' },
+          root_markers = { 'Cargo.toml', 'rust-project.json' },
+        },
 
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -628,16 +666,16 @@ require('lazy').setup({
       --    :Mason
       --
       -- You can press `g?` for help in this menu.
-      --
-      -- NOTE: Mason package names differ from LSP config names
-      -- Use Mason package names here (e.g., 'lua-language-server' not 'lua_ls')
       local ensure_installed = {
-        'lua-language-server', -- Lua LSP (config name: lua_ls)
+        'clangd',
+        'julia-lsp',
+        'pyrefly',
+        'rust-analyzer',
+        'lua-language-server',
+        'markdownlint', -- Used for Markdown linting
         'stylua', -- Used to format Lua code
         'ruff', -- Used for Python linting and formatting
         'biome', -- Used for JSON/JS/TS formatting
-        'clangd', -- C/C++ LSP
-        'rust-analyzer', -- Rust LSP (config name: rust_analyzer)
       }
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -922,6 +960,11 @@ require('lazy').setup({
         end,
       })
     end,
+    opts = {
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      auto_install = true,
+      highlight = { enable = true },
+    },
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
