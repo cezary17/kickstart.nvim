@@ -1,13 +1,8 @@
-return {
-  'alex-popov-tech/store.nvim',
-  dependencies = {
-    'OXY2DEV/markview.nvim', -- optional, for pretty readme preview / help window
-  },
-  cmd = 'Store',
-  keys = {
-    { '<leader>sp', '<cmd>Store<cr>', desc = '[S]earch [P]lugins' },
-  },
-  opts = {
-    -- optional configuration here
-  },
+vim.pack.add {
+  'https://github.com/OXY2DEV/markview.nvim',
+  'https://github.com/alex-popov-tech/store.nvim',
 }
+
+require('store').setup {}
+
+vim.keymap.set('n', '<leader>sp', '<cmd>Store<cr>', { desc = '[S]earch [P]lugins' })
