@@ -395,10 +395,12 @@ do
     styles = { transparency = true },
   }
 
+  vim.pack.add { gh 'sainnhe/gruvbox-material'}
+
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'rose-pine'
+  vim.cmd.colorscheme 'gruvbox-material'
   vim.cmd.hi 'Comment gui=none'
 
   -- Highlight todo, notes, etc in comments
@@ -905,7 +907,17 @@ do
       -- See `:help blink-cmp-config-keymap` for defining your own keymap
       preset = 'super-tab',
       ['<leader><Tab>'] = { 'show_documentation', 'fallback' },
-      ['<Tab>'] = { 'accept', 'fallback' },
+      ['<Tab>'] = {
+        function()
+          local ok, virtualtext = pcall(require, 'minuet.virtualtext')
+          if ok and virtualtext.action.is_visible() then
+            virtualtext.action.accept()
+            return true
+          end
+        end,
+        'accept',
+        'fallback',
+      },
 
       -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
       --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps

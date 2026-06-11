@@ -9,6 +9,8 @@ lint.linters_by_ft = {
   python = { 'ruff' },
 }
 
+lint.linters.markdownlint.args = { '--disable', 'MD013', '--stdin' }
+
 -- Configure ruff to only check style/complexity, not code analysis.
 -- Pyrefly (LSP) handles all type checking and code analysis.
 lint.linters.ruff.args = {
